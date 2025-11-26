@@ -1,0 +1,115 @@
+import java.util.Scanner;
+
+public class Main {
+    
+    public static void main(String[] args) {
+        
+        final String QUOTE_COMPLETA = "LIFE IS NOT A PROBLEM TO BE SOLVED"; 
+        
+        Scanner sc = new Scanner(System.in);
+        
+        if (sc.hasNextInt()) {
+            int N = sc.nextInt();
+            
+            if (N >= 1 && N <= QUOTE_COMPLETA.length()) {
+                
+                String resultado = QUOTE_COMPLETA.substring(0, N);
+                
+                System.out.println(resultado);
+            }
+        }
+        
+        sc.close();
+    }
+}
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class QuoteExtractorTest {
+
+    @BeforeEach
+    void setup() {
+        // Redireciona System.out para capturar a saída do programa
+        testOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(testOut));
+    }
+
+    @AfterEach
+    void restoreStreams() {
+      
+        System.setIn(originalSystemIn);
+        System.setOut(originalSystemOut);
+    }
+    
+    private void provideInput(String data) {
+        ByteArrayInputStream testIn = new ByteArrayInputStream(data.getBytes());
+        System.setIn(testIn);
+    }
+
+    private String getOutput() {
+        return testOut.toString().trim();
+    }
+
+    @Test
+    void testCaseN1() {
+
+        provideInput("1");
+        Main.main(new String[]{});
+
+        assertEquals("L", getOutput(), "Deve retornar o primeiro caractere.");
+    }
+
+    @Test
+    void testCaseN3() {
+        
+        provideInput("3");
+        Main.main(new String[]{});
+        
+        assertEquals("LIF", getOutput(), "Deve retornar os 3 primeiros caracteres.");
+    }
+    
+    @Test
+    void testCaseN7IncludingSpace() {
+       
+        provideInput("7");
+        Main.main(new String[]{});
+
+        assertEquals("LIFE IS", getOutput(), "Deve incluir o espaço no resultado.");
+    }
+
+    @Test
+    void testCaseMaximumN34() {
+       
+        provideInput("34");
+        Main.main(new String[]{});
+
+        final String EXPECTED_FULL_QUOTE = "LIFE IS NOT A PROBLEM TO BE SOLVED";
+        assertEquals(EXPECTED_FULL_QUOTE, getOutput(), "Deve retornar a citação completa.");
+    }
+
+    @Test
+    void testInvalidNTooLarge() {
+        provideInput("35");
+        Main.main(new String[]{});
+
+       
+        assertTrue(getOutput().isEmpty(), "Não deve imprimir nada se N for maior que o tamanho da citação.");
+    }
+    
+    @Test
+    void testInvalidNTooSmall() {
+       
+        provideInput("0");
+        Main.main(new String[]{});
+
+        assertTrue(getOutput().isEmpty(), "Não deve imprimir nada se N for menor que 1.");
+    }
+}
