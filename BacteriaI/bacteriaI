@@ -1,0 +1,103 @@
+import java.util.Scanner;
+ 
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNext()) {
+            String D = sc.next();
+            if (!sc.hasNext()) {
+                break; 
+            }
+            String S = sc.next();
+            if (D.contains(S)) {
+                System.out.println("Resistente");
+            } else {
+                System.out.println("Nao resistente");
+            }
+        }
+        sc.close();
+    }
+}
+ 
+public class StringCheckerTest {
+ 
+   
+    @Test
+    void testeT1_ContencaoSimples() {
+        String D = "universidade";
+        String S = "sidade";
+        assertEquals("Resistente", StringChecker.classificarResistencia(D, S), "T1 Falhou: Deve ser Resistente");
+    }
+ 
+   
+    @Test
+    void testeT2_NaoContencao() {
+        String D = "programacao";
+        String S = "z";
+        assertEquals("Nao resistente", StringChecker.classificarResistencia(D, S), "T2 Falhou: Deve ser Nao resistente");
+    }
+ 
+   
+    @Test
+    void testeT3_StringsIdenticas() {
+        String D = "exemplo";
+        String S = "exemplo";
+        assertEquals("Resistente", StringChecker.classificarResistencia(D, S), "T3 Falhou: Deve ser Resistente");
+    }
+ 
+    @Test
+    void testeT4_ContencaoNoMeio() {
+        String D = "algoritmo";
+        String S = "ritm";
+        assertEquals("Resistente", StringChecker.classificarResistencia(D, S), "T4 Falhou: Deve ser Resistente");
+    }
+ 
+    @Test
+    void testeT5_CaseSensitiveFalha() {
+        String D = "Java";
+        String S = "java";
+        assertEquals("Nao resistente", StringChecker.classificarResistencia(D, S), "T5 Falhou: Diferença de caixa");
+    }
+ 
+    @Test
+    void testeT6_CaseSensitiveFalhaMaiuscula() {
+        String D = "trabalho";
+        String S = "TRA";
+        assertEquals("Nao resistente", StringChecker.classificarResistencia(D, S), "T6 Falhou: Diferença de caixa");
+    }
+ 
+    @Test
+    void testeT7_PrimeiroCaractere() {
+        String D = "computador";
+        String S = "c";
+        assertEquals("Resistente", StringChecker.classificarResistencia(D, S), "T7 Falhou: Primeiro caractere");
+    }
+ 
+    @Test
+    void testeT8_UltimoCaractere() {
+        String D = "curso";
+        String S = "o";
+        assertEquals("Resistente", StringChecker.classificarResistencia(D, S), "T8 Falhou: Último caractere");
+    }
+ 
+    @Test
+    void testeT9_StringSVazia() {
+        String D = "estrutura";
+        String S = "";
+        assertEquals("Resistente", StringChecker.classificarResistencia(D, S), "T9 Falhou: S vazia deve ser Resistente");
+    }
+ 
+    @Test
+    void testeT10_StringDVazia() {
+        String D = "";
+        String S = "teste";
+        assertEquals("Nao resistente", StringChecker.classificarResistencia(D, S), "T10 Falhou: D vazio não contém S");
+    }
+ 
+    @Test
+    void testeT11_S_MaiorQue_D() {
+        String D = "a";
+        String S = "aa";
+        assertEquals("Nao resistente", StringChecker.classificarResistencia(D, S), "T11 Falhou: S maior que D");
+    }
+}
