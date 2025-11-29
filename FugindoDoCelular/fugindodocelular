@@ -1,0 +1,110 @@
+package com.exemplo;
+
+public class CharacterSegmenter {
+    public static int segmentMessage(int limit, String msg) {
+        String nonSpaceMsg = msg.replaceAll("\\s+", "");
+        int effectiveLength = nonSpaceMsg.length();
+        
+        if (effectiveLength == 0) {
+            return 0;
+        }
+        
+        int lines = (effectiveLength + limit - 1) / limit;
+        
+        return lines;
+    }
+}
+
+package com.exemplo;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+public class CharacterSegmenterTest {
+    
+    @Test
+    void testExactFit() {
+        String msg = "ABCDE FGH";
+        int limit = 4;
+        assertEquals(2, CharacterSegmenter.segmentMessage(limit, msg), 
+                     "Deve retornar 2 linhas quando o comprimento efetivo (8) é um múltiplo do limite (4).");
+    }
+
+    @Test
+    void testExactFitWithNoSpaces() {
+        String msg = "ABCDEF";
+        int limit = 3;
+        assertEquals(2, CharacterSegmenter.segmentMessage(limit, msg),
+                     "Deve funcionar corretamente sem espaços.");
+    }
+    
+    
+    @Test
+    void testCeilingNeeded() {
+        String msg = "ABCDE FGH J";
+        int limit = 4;
+        assertEquals(3, CharacterSegmenter.segmentMessage(limit, msg),
+                     "Deve retornar 3 linhas, pois 9 caracteres requerem um teto na divisão por 4.");
+    }
+
+    @Test
+    void testMinimalCeiling() {
+        String msg = "A B C D E";
+        int limit = 4;
+        assertEquals(2, CharacterSegmenter.segmentMessage(limit, msg),
+                     "Deve retornar 2, testando o caso onde sobra apenas 1 caractere na última linha.");
+    }
+    
+    @Test
+    void testLimitIsOne() {
+        String msg = "A B C";
+        int limit = 1;
+        assertEquals(3, CharacterSegmenter.segmentMessage(limit, msg),
+                     "O limite de 1 deve resultar em uma linha por caractere.");
+    }
+    
+    
+    @Test
+    void testEmptyMessage() {
+        String msg = "";
+        int limit = 5;
+        assertEquals(0, CharacterSegmenter.segmentMessage(limit, msg),
+                     "Mensagem vazia deve retornar 0 linhas.");
+    }
+
+    @Test
+    void testMessageWithOnlySpaces() {
+        String msg = "   \t \n ";
+        int limit = 10;
+        assertEquals(0, CharacterSegmenter.segmentMessage(limit, msg),
+                     "Mensagem contendo apenas espaços deve retornar 0 linhas.");
+    }
+
+    @Test
+    void testSingleCharacterMessage() {
+        String msg = "A";
+        int limit = 10;
+        assertEquals(1, CharacterSegmenter.segmentMessage(limit, msg),
+                     "Mensagem de um caractere deve retornar 1 linha.");
+    }
+
+    @Test
+    void testLimitEqualsEffectiveLength() {
+        String msg = "1234 67890";
+        int limit = 10;
+        assertEquals(1, CharacterSegmenter.segmentMessage(limit, msg),
+                     "Comprimento igual ao limite deve retornar 1 linha.");
+    }
+    
+    
+    @Test
+    void testDivisionByZero() {
+        String msg = "ABC";
+        int limit = 0;
+        
+        assertThrows(ArithmeticException.class, () -> {
+            CharacterSegmenter.segmentMessage(limit, msg);
+        }, "A divisão por limite 0 deve lançar ArithmeticException.");
+    }
+}
