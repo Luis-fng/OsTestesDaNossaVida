@@ -1,0 +1,126 @@
+package com.exemplo;
+
+public class StringDivider {
+    
+    public static String[] divide(String source) {
+        int splitPoint = source.indexOf(',');
+        
+        if (splitPoint == -1) }
+            return new String[]{source, ""};
+        }
+        
+        String partA = source.substring(0, splitPoint);
+    
+        String partB = source.substring(splitPoint + 1);
+      
+        String trimmedPartB = partB.replaceAll("^\\s+", "");
+        
+        return new String[]{ partA, trimmedPartB };
+    }
+}
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class BacteriaTest {
+    private final InputStream originalSystemIn = System.in;
+    private final PrintStream originalSystemOut = System.out;
+    private ByteArrayOutputStream testOut;
+
+    @BeforeEach
+    void setup() {
+        testOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(testOut));
+    }
+
+    @AfterEach
+    void restoreStreams() {
+        System.setIn(originalSystemIn);
+        System.setOut(originalSystemOut);
+    }
+    
+    private void provideInput(String data) {
+        ByteArrayInputStream testIn = new ByteArrayInputStream(data.getBytes());
+        System.setIn(testIn);
+    }
+
+    private String getOutput() {
+        return testOut.toString().replace("\r\n", "\n");
+    }
+
+    @Test
+    void testCaseExample1_Resistente() {
+        provideInput("ACGTC\nCGT\n");
+        Main.main(new String[]{});
+
+        String expectedOutput = "Resistente\n"; 
+        
+        assertEquals(expectedOutput, getOutput(), "Deve ser 'Resistente' se S estiver em D.");
+    }
+
+    @Test
+    void testCaseExample2_NaoResistente() {
+        provideInput("CCT\nAG\n");
+        Main.main(new String[]{});
+
+        String expectedOutput = "Nao resistente\n"; 
+        
+        assertEquals(expectedOutput, getOutput(), "Deve ser 'Nao resistente' se S não estiver em D.");
+    }
+    
+    @Test
+    void testSubstringAtStart() {
+        provideInput("GATTACA\nGAT\n");
+        Main.main(new String[]{});
+
+        String expectedOutput = "Resistente\n"; 
+        assertEquals(expectedOutput, getOutput());
+    }
+    
+    @Test
+    void testSubstringAtEnd() {
+        provideInput("GATTACA\nTACA\n");
+        Main.main(new String[]{});
+
+        String expectedOutput = "Resistente\n"; 
+        assertEquals(expectedOutput, getOutput());
+    }
+
+    @Test
+    void testSubstringExactMatch() {
+        provideInput("TTTTT\nTTTTT\n");
+        Main.main(new String[]{});
+
+        String expectedOutput = "Resistente\n"; 
+        assertEquals(expectedOutput, getOutput());
+    }
+    
+    @Test
+    void testSubstringMismatchLength() {
+        provideInput("AT\nATTG\n");
+        Main.main(new String[]{});
+
+        String expectedOutput = "Nao resistente\n"; 
+        assertEquals(expectedOutput, getOutput());
+    }
+    
+    @Test
+    void testMultipleCases() {
+       
+        provideInput("ACGTC\nCGT\nCCT\nAG\nAAAAA\nAA\n");
+        Main.main(new String[]{});
+
+        String expectedOutput = 
+            "Resistente\n" + 
+            "Nao resistente\n" +
+            "Resistente\n";
+
+        assertEquals(expectedOutput, getOutput(), "Deve processar múltiplos casos corretamente.");
+    }
+}
